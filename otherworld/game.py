@@ -96,6 +96,18 @@ class OtherWorldGame:
 
 
     def render_inventory(self, inventory: OtherWorldInventory, detailed = False) -> str:
+        """
+        Render inventory string.
+        There are two possible outputs - a simple one and a detailed one.
+        The latter if `detailed` is True. The detailed one contains weight.
+
+        Args:
+            inventory (OtherWorldInventory): The inventory to render.
+            detailed (bool, optional): If the detailed output should be rendered. Defaults to False.
+
+        Returns:
+            str: Rendered string (a fixed-width table)
+        """
         lines = []
         total_weight = 0.0
         if detailed:
@@ -119,17 +131,30 @@ class OtherWorldGame:
     
 
     def render_map(self, map_id: str) -> str:
+        """
+        Render text map description. It's being displayed when the user
+        enters the `look` command.
+
+        Args:
+            map_id (str): ID of the map to render.
+
+        Returns:
+            str: Rendered string
+        """
         result = ""
         try:
             map = self.maps[map_id]
+
+            items_table = ""
             items_str = self.render_inventory(map.items, detailed=False)
+            if len(items_str) > 0:
+                items_table = f"  - Items:\n{items_str}\n"
+
             exits_str = ", ".join(map.exits.keys())
             result = f"""{map.title}
 {map.description}
 
-  - Items: 
-{items_str}
-  - Possible exits: {exits_str}"""
+{items_table}  - Possible exits: {exits_str}"""
         except KeyError:
             result = f"Error: Map ID '{map_id}' not found."
         return result
