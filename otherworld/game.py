@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Generator, TypeVar
+from typing import Generator, Optional, TypeVar
 
 from map import OtherWorldMap
 from item import OtherWorldItem
@@ -74,3 +74,21 @@ class OtherWorldGame:
             obj = cls()
             obj.load_yaml_file(each.open(encoding=FILE_ENCODING))
             yield obj
+
+
+    def item_name_to_id(self, item_name: str) -> Optional[str]:
+        """
+        Translate item name to item ID.
+
+        Args:
+            item_name (str): Name of an item
+
+        Returns:
+            Optional[str]: Item ID if found, None otherwise.
+        """
+        result = None
+        for k, v in self.items.items():
+            if v.name.lower() == item_name.lower():
+                result = k
+                break
+        return result
