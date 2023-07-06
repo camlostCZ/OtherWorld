@@ -1,8 +1,9 @@
 from dataclasses import dataclass
+from random import randint
 
 @dataclass
-class CharacterProperties:
-    hp: int = 0
-    str: int = 0
-    con: int = 0
-    wis: int = 0
+class CharacterStats:
+    hp: int = randint(4, 20)
+    str: int = randint(1, 18)
+    con: int = randint(1, 18)
+    wis: int = randint(1, 18)
