@@ -6,3 +6,5 @@ PATH_HELP = "./resources/help.txt"
 PATH_ITEMS = "./resources/items"
 PATH_MAPS = "./resources/maps"
 
+FLAG_COLLECTABLE = "collectable"
+FLAG_CONSUMABLE = "consumable"
