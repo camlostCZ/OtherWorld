@@ -86,7 +86,7 @@ class OtherWorldInventory:
             item = self.items[idx]
             item.count += -1
             if item.count == 0: # Last piece of an item removed
-                self.items = self.items[:idx] + self.items[idx:]       
+                self.items = self.items[:idx] + self.items[idx + 1:]       
         else:
             raise InventoryError("Item not found")
         
