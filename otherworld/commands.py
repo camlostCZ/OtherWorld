@@ -8,7 +8,7 @@ COMMANDS = {
         "fn": CommandHandler.cmd_consume
     },
     "examine": {
-        "help": "Examine an item in the player's inventory",
+        "help": "Examine an item in the player's inventory or on the current map",
         "fn": CommandHandler.cmd_examine
     },
     "go": {
