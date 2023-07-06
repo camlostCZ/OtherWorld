@@ -11,8 +11,8 @@ class InventoryItem:
         #self.item: OtherWorldItem
         self.count = count
 
-    def get_item_weight(self) -> float:
-        return self.count * self.item.weight
+    #def get_item_weight(self) -> float:
+    #    return self.count * self.item.weight
 
 
 class OtherWorldInventory:
