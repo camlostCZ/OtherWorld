@@ -1,20 +1,49 @@
 from map import OtherWorldMap
 from game import OtherWorldGame
 from inventory import InventoryError
-from constants import FLAG_COLLECTABLE
+from constants import FLAG_COLLECTABLE, FLAG_CONSUMABLE
 from player import Player
 
 
 class CommandHandler:
+    """
+    Class to keep all command handlers together. It also allows for an
+    easy import.
+
+    Each command handler is a class method with the following parameters:
+        - cmd: Command string as enterer by the user.
+        - game: The OtherWorldGame object. Used to access game data.
+    Command handlers return a tuple of string displayed to the user 
+    (response to the command) and a flag idicating the game should end.
+    """
+    
     @classmethod
-    def cmd_eat(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
-        msg = "This item cannot be eaten."
+    def cmd_consume(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+        msg = "This item cannot be consumed."
         parts = cmd.split(" ")
         if len(parts) == 2:
-            item_name = parts[-1]
+            code = parts[-1]
             inventory = game.player.inventory
+            item_idx = inventory.get_item_idx_by_code(code)
+            try:
+                item_id = inventory.items[item_idx].id
+                # FIXME Possible bug if item_id wrong? Can it happen?
+                item = game.items[item_id]
+                # If not collectable, report an error.
+                if FLAG_CONSUMABLE in item.flags:
+                    inventory.remove_item(item_id)
+                    msg = f"You've consumed {item.name}."
+                    # TODO Remove some amount of hunger
+                    # TODO Apply effects if any present on the item
+                else:
+                    msg = "This item cannot be consumed."
+            except IndexError as e:
+                # If not found, report an error.
+                msg = "Cannot consume an item. No such item available."
+            except InventoryError as e:
+                msg = e
         else:
-             msg = "Error: Use `eat <inventory item id>` to eat an item."
+             msg = "Error: Use `consume <inventory item code>` to consume an item."
         return (msg, False)
 
 

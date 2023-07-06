@@ -3,9 +3,9 @@ from cmdhandler import CommandHandler
 # A dictionary of the available commands.
 # Keep it sorted so that it's easy to locate individual commands.
 COMMANDS = {
-    "eat": {
+    "consume": {
         "help": "Eat an item if it's to eat.",
-        "fn": CommandHandler.cmd_eat
+        "fn": CommandHandler.cmd_consume
     },
     "go": {
         "help": "Go to another map using the specified direction",
@@ -29,8 +29,11 @@ COMMANDS = {
     }
 }
 
+# A dictionary for alias -> command mappings.
+# The program uses this dictionary to search for commands.
 CMD_ALIASES = {
-    "eat": "eat",
+    "c": "consume",
+    "consume": "consume",
     "g": "go",
     "go": "go",
     "i": "inventory",
