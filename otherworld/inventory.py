@@ -6,10 +6,10 @@ class InventoryError(RuntimeError):
 
 
 class InventoryItem:
-    def __init__(self, id):
-        self.id: str = id
-        self.item: OtherWorldItem
-        self.count: int = 1
+    def __init__(self, id: str, count: int = 1):
+        self.id = id
+        #self.item: OtherWorldItem
+        self.count = count
 
     def get_item_weight(self) -> float:
         return self.count * self.item.weight
@@ -28,13 +28,13 @@ class OtherWorldInventory:
     """
     CODE_SET = [chr(ord('a') + x) for x in range(26)]
 
-    def __init__(self, name: str, max_items: int) -> None:
+    def __init__(self, name: str, max_items: int = len(CODE_SET)) -> None:
         self.name = name
         self.max_items = max_items
         self.items: list[InventoryItem] = []
 
 
-    def add_item(self, item_id: str) -> None:
+    def add_item(self, item_id: str, count: int = 1) -> None:
         """
         Add an item into the inventory.
 
@@ -46,9 +46,9 @@ class OtherWorldInventory:
         """
         idx = self.get_item_idx(item_id)
         if idx >= 0:    # Item found
-            self.items[idx].count += 1
+            self.items[idx].count += count
         elif len(self.items) < self.max_items:
-            self.items.append(InventoryItem(item_id))
+            self.items.append(InventoryItem(item_id, count))
         else:
             raise InventoryError("Invetory full")
 

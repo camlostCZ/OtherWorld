@@ -71,7 +71,7 @@ class OtherWorldGame:
         """
         p = Path(path)
         for each in p.glob("*.yaml"):
-            obj = cls()
+            obj = cls(self)
             obj.load_yaml_file(each.open(encoding=FILE_ENCODING))
             yield obj
 

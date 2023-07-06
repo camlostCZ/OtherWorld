@@ -1,5 +1,5 @@
 from charproperties import CharacterProperties
-from inventory import InventoryItem
+from inventory import InventoryItem, OtherWorldInventory
 
 
 class Player:
@@ -13,10 +13,8 @@ class Player:
         self.name = name
         self.title = ""
         self.properties = CharacterProperties()
-        self.inventory: list[InventoryItem] = []
+        self.inventory = OtherWorldInventory("player's inventory")
         self.effects = []   # Intended for spells, poisons, etc.
 
 
-    def get_total_item_weight(self) -> float:
-        return sum((x.get_item_weight() for x in self.inventory))
     
