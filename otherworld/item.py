@@ -12,7 +12,7 @@ class OtherWorldItem(YAMLSourced):
         self.title: str
         self.description: str
         self.weight: float
-        self.properties: list[str]
+        self.flags: list[str]
         self.effects: dict[str, Any]
         
 
@@ -29,5 +29,5 @@ class OtherWorldItem(YAMLSourced):
         self.title = data["title"]
         self.description = data["description"]
         self.weight = data["weight"]
-        self.properties = data["properties"]
+        self.flags = data["flags"]
         self.effects = data["effects"]
