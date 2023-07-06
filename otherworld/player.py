@@ -15,6 +15,7 @@ class Player:
         self.properties = CharacterProperties()
         self.inventory = OtherWorldInventory("player's inventory")
         self.effects = []   # Intended for spells, poisons, etc.
+        self.current_inventory = self.inventory
 
 
     

@@ -4,8 +4,12 @@ from cmdhandler import CommandHandler
 # Keep it sorted so that it's easy to locate individual commands.
 COMMANDS = {
     "consume": {
-        "help": "Eat an item if it's to eat.",
+        "help": "Eat an item if it's consumable",
         "fn": CommandHandler.cmd_consume
+    },
+    "examine": {
+        "help": "Examine an item in the player's inventory",
+        "fn": CommandHandler.cmd_examine
     },
     "go": {
         "help": "Go to another map using the specified direction",
@@ -34,6 +38,8 @@ COMMANDS = {
 CMD_ALIASES = {
     "c": "consume",
     "consume": "consume",
+    "ex": "examine",
+    "examine": "examine",
     "g": "go",
     "go": "go",
     "i": "inventory",

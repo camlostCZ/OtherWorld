@@ -22,7 +22,7 @@ class CommandHandler:
         msg = "This item cannot be consumed."
         parts = cmd.split(" ")
         if len(parts) == 2:
-            code = parts[-1]
+            code = parts[-1].strip()
             inventory = game.player.inventory
             item_idx = inventory.get_item_idx_by_code(code)
             try:
@@ -48,11 +48,29 @@ class CommandHandler:
 
 
     @classmethod
+    def cmd_examine(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+        msg = "Error: Use `examine <item code>` to examine an item."
+        parts = cmd.split(" ")
+        if len(parts) == 2:
+            code = parts[-1].strip()
+            inventory = game.player.current_inventory
+            item_idx = inventory.get_item_idx_by_code(code)
+            try:
+                item_id = inventory.items[item_idx].id
+                # FIXME Possible bug if item_id wrong? Can it happen?
+                item = game.items[item_id]
+                msg = item.description
+            except IndexError:
+                msg = "No such item."
+        return (msg, False)
+
+
+    @classmethod
     def cmd_go(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
         msg = ""
         parts = cmd.split(" ")
         if len(parts) == 2:
-            exit_name = parts[-1]
+            exit_name = parts[-1].strip()
             if exit_name in game.current_map.exits:
                 id = game.current_map.exits[exit_name]
                 if id in game.maps:
@@ -63,6 +81,10 @@ class CommandHandler:
                 msg = "Error: Unknown exit"
         else:
             msg = "Error: Use `go <exit name>` to move in the game."
+
+        # Reset the current inventory to the player's one (for the `examine` command)
+        game.player.current_inventory = game.player.inventory
+
         return(msg, False)
 
 
@@ -72,12 +94,20 @@ class CommandHandler:
         if len(game.player.inventory.items) > 0:
             inv_str = game.render_inventory(game.player.inventory, detailed=True)
             msg = f"Your inventory contains these items:\n{inv_str}"
+
+        # Set the current inventory to the player's one (for the `examine` command)
+        game.player.current_inventory = game.player.inventory
+
         return (msg, False)
     
 
     @classmethod
     def cmd_look(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
         map_str = game.render_map(game.current_map.id)
+
+        # Set the map's inventory as the current for the `examine` command
+        game.player.current_inventory = game.current_map.items
+
         return (map_str, False)
     
 
@@ -92,7 +122,7 @@ class CommandHandler:
         parts = cmd.split(" ", maxsplit=1)
         if len(parts) == 2:
             # Search for an item in the current map.
-            code = parts[1]
+            code = parts[1].strip()
             inventory = game.current_map.items
             item_idx = inventory.get_item_idx_by_code(code)
             try:
