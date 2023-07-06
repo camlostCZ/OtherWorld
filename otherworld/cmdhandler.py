@@ -38,22 +38,16 @@ class CommandHandler:
     @classmethod
     def cmd_inventory(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
         msg = "Your inventory is empty."
-        if len(game.player.inventory) > 0:
-            lines = [
-                "  Id  Item                                              Count  Weight"
-            ]
-            for each in game.player.inventory:
-                weight = each.count * each.item.weight
-                lines.append(f"  {each.id:<{2}}. {each.item.name:<{48}}  {each.count:>{5}}  {weight:>{5}}")
-            lines.append(f"Total item weight: {game.player.get_total_item_weight()}")
-            item_list = "\n".join(lines)
-            msg = f"Your inventory:\n{item_list}"
+        if len(game.player.inventory.items) > 0:
+            inv_str = game.render_inventory(game.player.inventory, detailed=True)
+            msg = f"Your inventory contains these items:\n{inv_str}"
         return (msg, False)
     
 
     @classmethod
     def cmd_look(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
-        return (game.current_map.to_string(), False)
+        map_str = game.render_map(game.current_map.id)
+        return (map_str, False)
     
 
     @classmethod

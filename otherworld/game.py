@@ -4,6 +4,7 @@ from typing import Generator, Optional, TypeVar
 from map import OtherWorldMap
 from item import OtherWorldItem
 from baseclasses import YAMLSourced
+from inventory import OtherWorldInventory
 from player import Player
 from constants import (
     FILE_ENCODING,
@@ -71,7 +72,7 @@ class OtherWorldGame:
         """
         p = Path(path)
         for each in p.glob("*.yaml"):
-            obj = cls(self)
+            obj = cls()
             obj.load_yaml_file(each.open(encoding=FILE_ENCODING))
             yield obj
 
@@ -91,4 +92,44 @@ class OtherWorldGame:
             if v.name.lower() == item_name.lower():
                 result = k
                 break
+        return result
+
+
+    def render_inventory(self, inventory: OtherWorldInventory, detailed = False) -> str:
+        lines = []
+        total_weight = 0.0
+        if detailed:
+            lines.append("      Id  Item name                                         Count  Weight")
+        for idx, each in enumerate(inventory.items):
+            item = self.items[each.id]
+            item_code = OtherWorldInventory.CODE_SET[idx]
+            title = item.title
+            line = f"      {item_code:>{2}}. "
+            if detailed:
+                weight = each.count * item.weight
+                total_weight += weight
+                line += f"{title:<{48}}  {each.count:>{4}}  {weight:>{6}}"
+            else:
+                line += f"{title} ({each.count})"
+            lines.append(line)
+        if detailed:
+            lines.append(f"Total item weight: {total_weight:.1f}")
+        result = "\n".join(lines)
+        return result
+    
+
+    def render_map(self, map_id: str) -> str:
+        result = ""
+        try:
+            map = self.maps[map_id]
+            items_str = self.render_inventory(map.items, detailed=False)
+            exits_str = ", ".join(map.exits.keys())
+            result = f"""{map.title}
+{map.description}
+
+  - Items: 
+{items_str}
+  - Possible exits: {exits_str}"""
+        except KeyError:
+            result = f"Error: Map ID '{map_id}' not found."
         return result

@@ -5,9 +5,8 @@ from baseclasses import YAMLSourced
 
 
 class OtherWorldItem(YAMLSourced):
-    def __init__(self, game) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self._game = game
         self.id: str
         self.name: str
         self.title: str

@@ -11,8 +11,7 @@ class OtherWorldMap(YAMLSourced):
     A map - class representing a single map in a world.
     """
 
-    def __init__(self, game) -> None:
-        self._game = game
+    def __init__(self) -> None:
         self.id = ""
         self.title = ""
         self.description = ""
@@ -41,21 +40,3 @@ class OtherWorldMap(YAMLSourced):
             for item in data["items"]:
                 id, count = item
                 self.items.add_item(id, count)
-
-
-    def to_string(self) -> str:
-        """
-        Create a readable text representation of a map.
-
-        Returns:
-            str: Human-readable map description.
-        """
-        items_str = ", ".join(
-            [f"{self._game.items[x.id].title} ({x.count})" for x in self.items.items])
-        exits_str = ", ".join(self.exits.keys())
-        result = f"""{self.title}
-{self.description}
-
-  - Items: {items_str}
-  - Possible exits: {exits_str}"""
-        return result
