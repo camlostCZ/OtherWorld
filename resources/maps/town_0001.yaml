@@ -5,7 +5,7 @@ exits:
   - south: "town_0004"
   - west: "town_0005"
   - east: "town_0002"
-  - down: "town_0003"
+  - down: "sewers_0001"
 items: [
   ["town0001_sign", 1]
 ]
