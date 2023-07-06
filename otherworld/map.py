@@ -49,7 +49,11 @@ class OtherWorldMap(YAMLSourced):
         Returns:
             str: Human-readable map description.
         """
-        result = f"{self.title}\n\n{self.description}\n\nExits:\n"
-        for key, val in self.exits.items():
-            result += f"  - {key}\n"
+        items_str = ""
+        exits_str = ", ".join(self.exits.keys())
+        result = f"""{self.title}
+{self.description}
+
+  - Items: {items_str}
+  - Possible exits: {exits_str}"""
         return result
