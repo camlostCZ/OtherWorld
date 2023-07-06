@@ -28,8 +28,8 @@ class CliApp:
             cmd_name = CMD_ALIASES[key]
             command = COMMANDS[cmd_name]
             msg, should_exit = command["fn"](cmd, self.game)
-        except IndexError:
-            pass
+        except KeyError as e:
+            msg = "Error: Unknown command."
         return (msg, should_exit)
 
 
@@ -46,5 +46,5 @@ class CliApp:
                 else:
                     msg, finished = self.handle_cmd(cmd)
                     print(msg)
-        except KeyError:
+        except KeyError as e:
             print(f"Error: Invalid map specified. No maps found?", file=sys.stderr)
