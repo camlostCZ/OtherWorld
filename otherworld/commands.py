@@ -22,6 +22,10 @@ COMMANDS = {
     "quit": {
         "help": "Quit the game",
         "fn": CommandHandler.cmd_quit
+    },
+    "take": {
+        "help": "Take an item from the floor / map",
+        "fn": CommandHandler.cmd_take
     }
 }
 
@@ -35,5 +39,7 @@ CMD_ALIASES = {
     "l": "look",
     "look": "look",
     "q": "quit",
-    "quit": "quit"
+    "quit": "quit",
+    "t": "take",
+    "take": "take"
 }

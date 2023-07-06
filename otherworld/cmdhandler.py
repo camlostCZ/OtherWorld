@@ -1,5 +1,7 @@
 from map import OtherWorldMap
 from game import OtherWorldGame
+from inventory import InventoryError
+from constants import FLAG_COLLECTABLE
 from player import Player
 
 
@@ -57,14 +59,28 @@ class CommandHandler:
 
     @classmethod
     def cmd_take(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
-        msg = "Error: Use `take <item id>` to take items."
+        msg = "Error: Use `take <item code>` to take items."
         parts = cmd.split(" ", maxsplit=1)
         if len(parts) == 2:
-            # TODO Search for an item in the current map.
-            # If not found, report an error.
-            # If not collectable, report an error.
-            # Otherwise:
-            #   - remove the item from map inventory
-            #   - add the item to player's inventory
-            pass
+            # Search for an item in the current map.
+            code = parts[1]
+            inventory = game.current_map.items
+            item_idx = inventory.get_item_idx_by_code(code)
+            try:
+                item_id = inventory.items[item_idx].id
+                # FIXME Possible bug if item_id wrong? Can it happen?
+                item = game.items[item_id]
+                # If not collectable, report an error.
+                if FLAG_COLLECTABLE in item.flags:
+                    inventory.remove_item(item_id)
+                    game.player.inventory.add_item(item_id)
+                    msg = f"You've taken {item.name}."
+                else:
+                    msg = "This item cannot be taken."
+            except IndexError as e:
+                # If not found, report an error.
+                msg = "Cannot take an item. No such item available."
+            except InventoryError as e:
+                msg = e
+        
         return (msg, False)
