@@ -21,6 +21,17 @@ class CliApp:
 
 
     def handle_cmd(self, cmd: str) -> tuple[str, bool]:
+        """
+        Handle user commands.
+
+
+        Args:
+            cmd (str): String command as entered by the user
+
+        Returns:
+            tuple[str, bool]: A tuple of command response (message) and
+                a flag indicating the game should finish.
+        """
         msg = "Unknown command. See help."
         should_exit = False
         try:
@@ -34,17 +45,21 @@ class CliApp:
 
 
     def run(self) -> None:
+        """
+        Main loop. This is where the commands are handled.
+        """
         try:
             finished = False
             while not finished:
                 print(f"\nYou are here:  {self.game.current_map.title}")
-                cmd = input("\nEnter command: ").lower()
+                cmd = input("\nYour action: ").lower()
                 print()
 
                 if cmd in "help,h,?".split(","):
                     self.cmd_help_handler()
                 else:
                     msg, finished = self.handle_cmd(cmd)
-                    print(msg)
+                    if msg:
+                        print(f"\n{msg}")
         except KeyError as e:
             print(f"Error: Invalid map specified. No maps found?", file=sys.stderr)
