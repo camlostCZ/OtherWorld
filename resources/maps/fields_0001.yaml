@@ -1,0 +1,11 @@
+id: "fields_0001"
+title: "Southern Fields"
+description: "There are vast fields as far as you can see but nothing interesting.
+  You smell dirt freshly fertilized with manure which is nothing you really
+  appreciate.
+  The path ends here."
+exits:
+  - north: "town_000"
+items: [
+  ["mushroom_green", 2]
+]

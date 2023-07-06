@@ -1,0 +1,6 @@
+OtherWorld Help
+===============
+
+help - Display this help
+quit - Quit the game
+go <direction> - Go to other map using the specified direction
