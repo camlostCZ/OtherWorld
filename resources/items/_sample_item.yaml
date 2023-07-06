@@ -3,7 +3,7 @@ name: "green mushroom"
 title: "A green mushroom"
 description: "It's a lovely green mushroom. It smells nicely. No pieces missing, it's a fresh new mushroom."
 weight: 0.1
-properties: [
+flags: [
   "eatable", "collectable"
 ]
 effects: [

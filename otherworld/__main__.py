@@ -7,5 +7,5 @@ try:
 except KeyboardInterrupt:
     print("Interrupted by user.", file=sys.stderr)
 except KeyError:
-    print("Unabled to initialize the game. Missing map files?", 
+    print("Unabled to initialize the game. Invalid YAML files?", 
         file=sys.stderr)
