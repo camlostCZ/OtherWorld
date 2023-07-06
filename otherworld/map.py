@@ -30,13 +30,16 @@ class OtherWorldMap(YAMLSourced):
         self.id = data["id"]
         self.title = data["title"]
         self.description = data["description"]
-        for item in data["exits"]:
-            for key, val in item.items():
-                self.exits[key] = val
 
-        for item in data["items"]:
-            id, count = item
-            inv_item = InventoryItem()
+        if "exits" in data:
+            for item in data["exits"]:
+                for key, val in item.items():
+                    self.exits[key] = val
+
+        if "items" in data:
+            for item in data["items"]:
+                id, count = item
+                inv_item = InventoryItem()
 
 
     def to_string(self) -> str:

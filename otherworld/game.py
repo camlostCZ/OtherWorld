@@ -3,7 +3,7 @@ from typing import Generator, TypeVar
 
 from map import OtherWorldMap
 from item import OtherWorldItem
-from otherworld.baseclasses import YAMLSourced
+from baseclasses import YAMLSourced
 from player import Player
 from constants import (
     FILE_ENCODING,
