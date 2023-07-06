@@ -1,15 +1,20 @@
 from typing import Any, TextIO
 from yaml import safe_load
 
+from baseclasses import YAMLSourced
 
-class OtherWorldItem:
-    id: str
-    name: str
-    title: str
-    description: str
-    weight: float
-    properties: list[str]
-    effects: dict[str, Any]
+
+class OtherWorldItem(YAMLSourced):
+    def __init__(self) -> None:
+        super().__init__()
+        self.id: str
+        self.name: str
+        self.title: str
+        self.description: str
+        self.weight: float
+        self.properties: list[str]
+        self.effects: dict[str, Any]
+        
 
     def load_yaml_file(self, fd: TextIO) -> None:
         """

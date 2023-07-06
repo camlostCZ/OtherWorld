@@ -3,9 +3,10 @@ from yaml import safe_load
 from typing import TextIO
 
 from inventory import InventoryItem
+from baseclasses import YAMLSourced
 
 
-class OtherWorldMap:
+class OtherWorldMap(YAMLSourced):
     """
     A map - class representing a single map in a world.
     """
