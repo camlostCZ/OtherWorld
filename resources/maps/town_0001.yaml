@@ -1,0 +1,8 @@
+id: "town_0001"
+title: "Town square"
+description: "Simple square with a small fountain in the middle."
+exits:
+  - south: "town_0004"
+  - west: "town_0005"
+  - east: "town_0002"
+  - down: "town_0003"

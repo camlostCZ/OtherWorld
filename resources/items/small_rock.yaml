@@ -1,0 +1,10 @@
+id: "rock_small"
+name: "small rock"
+title: "A small rock"
+description: "An ordinary small rock. Nothing special about it."
+weight: 0.2
+flags: [
+  "collectable"
+]
+effects: [
+]

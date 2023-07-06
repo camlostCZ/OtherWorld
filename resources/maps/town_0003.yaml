@@ -1,0 +1,6 @@
+id: "town_0003"
+title: "Town sewers"
+description: "So you want some adventure! Yeah, this is the right place. 
+  It smells like hell here. Rotten trash lying all around this place."
+exits:
+  - up: "town_0001"
