@@ -5,7 +5,7 @@ description: "There are vast fields as far as you can see but nothing interestin
   appreciate.
   The path ends here."
 exits:
-  - north: "town_000"
+  - north: "town_0004"
 items: [
   ["mushroom_green", 2]
 ]
