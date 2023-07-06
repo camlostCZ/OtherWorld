@@ -7,5 +7,6 @@ description: "There are vast fields as far as you can see but nothing interestin
 exits:
   - north: "town_0004"
 items: [
-  ["mushroom_green", 2]
+  ["mushroom_green", 2],
+  ["rock_small", 1]
 ]
