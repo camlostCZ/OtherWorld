@@ -5,18 +5,22 @@ from cmdhandler import CommandHandler
 COMMANDS = {
     "consume": {
         "help": "Eat an item if it's consumable",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
         "fn": CommandHandler.cmd_consume
     },
     "drop": {
         "help": "Drop an item from player's inventory",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
         "fn": CommandHandler.cmd_drop
     },
     "examine": {
         "help": "Examine an item in the player's inventory or on the current map",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
         "fn": CommandHandler.cmd_examine
     },
     "go": {
         "help": "Go to another map using the specified direction",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<exit>[^\s]+)$",
         "fn": CommandHandler.cmd_go
     },
     "inventory": {
@@ -33,6 +37,7 @@ COMMANDS = {
     },
     "take": {
         "help": "Take an item from the floor / map",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
         "fn": CommandHandler.cmd_take
     }
 }
