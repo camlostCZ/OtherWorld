@@ -20,83 +20,66 @@ class CommandHandler:
     """
     
     @classmethod
-    def cmd_consume(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+    def cmd_consume(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
         msg = "This item cannot be consumed."
-        parts = cmd.split(" ")
-        if len(parts) == 2:
-            code = parts[-1].strip()
-            try:
-                inventory = game.player.inventory
-                item = inventory.get_item_by_code(code).item
-                # If not collectable, report an error.
-                if FLAG_CONSUMABLE in item.flags:
-                    inventory.remove_item(item)
-                    msg = f"You've consumed {item.name}."
-                    # Apply effects if any present on the item
-                    for each in item.effects:
-                        eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
-                        game.player.effects.append(eff)
-                else:
-                    msg = "This item cannot be consumed."
-            except IndexError as e:
-                # If not found, report an error.
-                msg = "Cannot consume an item. No such item available."
-            except InventoryError as e:
-                msg = f"{e}"
-        else:
-             msg = "Error: Use `consume <inventory item code>` to consume an item."
+        try:
+            inventory = game.player.inventory
+            item = inventory.get_item_by_code(cmd_dict["code"]).item
+            # If not collectable, report an error.
+            if FLAG_CONSUMABLE in item.flags:
+                inventory.remove_item(item)
+                msg = f"You've consumed {item.name}."
+                # Apply effects if any present on the item
+                for each in item.effects:
+                    eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
+                    game.player.effects.append(eff)
+            else:
+                msg = "This item cannot be consumed."
+        except IndexError as e:
+            # If not found, report an error.
+            msg = "Cannot consume an item. No such item available."
+        except InventoryError as e:
+            msg = f"{e}"
         return (msg, False)
     
 
     @classmethod
-    def cmd_drop(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
-        msg = "Error: Use `drop <item code>` to drop an item."
-        parts = cmd.split(" ")
-        if len(parts) == 2:
-            code = parts[-1].strip()
-            try:
-                game.move_item_inv2inv(code, game.player.inventory, game.current_map.inventory)
-                msg = f"The item has been dropped from your inventory."
-            except InventoryError as e:
-                msg = f"{e}"
+    def cmd_drop(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
+        try:
+            game.move_item_inv2inv(cmd_dict["code"], game.player.inventory, game.current_map.inventory)
+            msg = f"The item has been dropped from your inventory."
+        except InventoryError as e:
+            msg = f"{e}"
         return (msg, False)
 
 
     @classmethod
-    def cmd_examine(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
-        msg = "Error: Use `examine <item code>` to examine an item."
-        parts = cmd.split(" ")
-        if len(parts) == 2:
-            code = parts[-1].strip()
-            try:
-                inventory = game.player.current_inventory
-                item = inventory.get_item_by_code(code).item
-                msg = item.description
-            except IndexError:
-                msg = "No such item."
+    def cmd_examine(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
+        try:
+            inventory = game.player.current_inventory
+            item = inventory.get_item_by_code(cmd_dict["code"]).item
+            msg = item.description
+        except IndexError:
+            msg = "No such item."
         return (msg, False)
 
 
     @classmethod
-    def cmd_go(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+    def cmd_go(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
         msg = ""
-        parts = cmd.split(" ")
-        if len(parts) == 2:
-            exit_name = parts[-1].strip()
-            if exit_name in game.current_map.exits:
-                id = game.current_map.exits[exit_name]
-                if id in game.maps:
-                    game.current_map = game.maps[id]
-                    for each in game.current_map.effects:
-                        game.player.effects.append(each)
+        exit_name = cmd_dict["exit"]
+        if exit_name in game.current_map.exits:
+            id = game.current_map.exits[exit_name]
+            if id in game.maps:
+                game.current_map = game.maps[id]
+                for each in game.current_map.effects:
+                    game.player.effects.append(each)
 
-                    msg = f"You are here: {game.current_map.title}"
-                else:
-                    msg = "Error: Map not available."
+                msg = f"You are here: {game.current_map.title}"
             else:
-                msg = "Error: Unknown exit"
+                msg = "Error: Map not available."
         else:
-            msg = "Error: Use `go <exit name>` to move in the game."
+            msg = "Error: Unknown exit"
 
         # Reset the current inventory to the player's one (for the `examine` command)
         game.player.current_inventory = game.player.inventory
@@ -105,7 +88,7 @@ class CommandHandler:
 
 
     @classmethod
-    def cmd_inventory(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+    def cmd_inventory(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
         msg = "Your inventory is empty."
         if len(game.player.inventory.items) > 0:
             inv_str = game.render_inventory(game.player.inventory, detailed=True)
@@ -118,7 +101,7 @@ class CommandHandler:
     
 
     @classmethod
-    def cmd_look(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+    def cmd_look(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
         map_str = game.render_map(game.current_map.id)
 
         # Set the map's inventory as the current for the `examine` command
@@ -128,29 +111,25 @@ class CommandHandler:
     
 
     @classmethod
-    def cmd_quit(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+    def cmd_quit(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
         return ("Exiting the game.", True)
     
 
     @classmethod
-    def cmd_take(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
-        msg = "Error: Use `take <item code>` to take items."
-        parts = cmd.split(" ", maxsplit=1)
-        if len(parts) == 2:
-            # Search for an item in the current map.
-            code = parts[1].strip()
-            try:
-                item = game.current_map.inventory.get_item_by_code(code).item
-                game.move_item_inv2inv(code, 
-                    game.current_map.inventory, game.player.inventory, 
-                    flag=FLAG_COLLECTABLE)
-                msg = f"You've taken {item.name}."
-            except ItemError:
-                msg = "This item cannot be taken."
-            except IndexError as e:
-                # If not found, report an error.
-                msg = "Cannot take an item. No such item available."
-            except InventoryError as e:
-                msg = e
+    def cmd_take(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
+        try:
+            code = cmd_dict["code"]
+            item = game.current_map.inventory.get_item_by_code(code).item
+            game.move_item_inv2inv(code, 
+                game.current_map.inventory, game.player.inventory, 
+                flag=FLAG_COLLECTABLE)
+            msg = f"You've taken {item.name}."
+        except ItemError:
+            msg = "This item cannot be taken."
+        except IndexError as e:
+            # If not found, report an error.
+            msg = "Cannot take an item. No such item available."
+        except InventoryError as e:
+            msg = e
         
         return (msg, False)

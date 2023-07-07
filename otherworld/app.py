@@ -1,3 +1,4 @@
+import re
 import sys
 
 from pathlib import Path
@@ -38,7 +39,11 @@ class CliApp:
             key = cmd.split(" ")[0]
             cmd_name = CMD_ALIASES[key]
             command = COMMANDS[cmd_name]
-            msg, should_exit = command["fn"](cmd, self.game)
+            m = re.match(command["pattern"], cmd)
+            if m:
+                msg, should_exit = command["fn"](m.groupdict(), self.game)
+            else:
+                msg = f"Error: {command['usage']}"
         except KeyError as e:
             msg = "Error: Unknown command."
         return (msg, should_exit)
