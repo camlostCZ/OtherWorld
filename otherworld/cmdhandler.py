@@ -41,9 +41,30 @@ class CommandHandler:
                 # If not found, report an error.
                 msg = "Cannot consume an item. No such item available."
             except InventoryError as e:
-                msg = e
+                msg = f"{e}"
         else:
              msg = "Error: Use `consume <inventory item code>` to consume an item."
+        return (msg, False)
+    
+
+    @classmethod
+    def cmd_drop(cls, cmd: str, game: OtherWorldGame) -> tuple[str, bool]:
+        msg = "Error: Use `drop <item code>` to drop an item."
+        parts = cmd.split(" ")
+        if len(parts) == 2:
+            code = parts[-1].strip()
+            inventory = game.player.inventory
+            item_idx = inventory.get_item_idx_by_code(code)
+            try:
+                item_id = inventory.items[item_idx].id
+                inventory.remove_item(item_id)
+                # FIXME Check whether there is a free capacity in map's inventory
+                game.current_map.items.add_item(item_id)
+                msg = f"The item has been dropped from your inventory."
+            except InventoryError as e:
+                msg = f"{e}"
+            except IndexError:
+                msg = "No such item."
         return (msg, False)
 
 

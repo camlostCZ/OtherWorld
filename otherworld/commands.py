@@ -7,6 +7,10 @@ COMMANDS = {
         "help": "Eat an item if it's consumable",
         "fn": CommandHandler.cmd_consume
     },
+    "drop": {
+        "help": "Drop an item from player's inventory",
+        "fn": CommandHandler.cmd_drop
+    },
     "examine": {
         "help": "Examine an item in the player's inventory or on the current map",
         "fn": CommandHandler.cmd_examine
@@ -38,6 +42,8 @@ COMMANDS = {
 CMD_ALIASES = {
     "c": "consume",
     "consume": "consume",
+    "d": "drop",
+    "drop": "drop",
     "ex": "examine",
     "examine": "examine",
     "g": "go",
