@@ -50,16 +50,25 @@ class CliApp:
         """
         try:
             finished = False
-            while not finished:
-                print(f"\nYou are here:  {self.game.current_map.title}")
-                cmd = input("\nYour action: ").lower()
+            msg = f"\nYou are here:  {self.game.current_map.title}"
+            while True:
+                if msg:
+                    print(f"\n{msg}")
+
+                msg, death = self.game.player.apply_effects()
+                if msg:
+                    print(f"\n{msg}")
+                finished = finished or death
+
+                if finished or death:
+                    break
+
+                cmd = input(f"\n[HP: {self.game.player.stats.hp}]  Your action: ").lower()
                 print()
 
                 if cmd in "help,h,?".split(","):
                     self.cmd_help_handler()
                 else:
-                    msg, finished = self.handle_cmd(cmd)
-                    if msg:
-                        print(f"\n{msg}")
+                    msg, finished = self.handle_cmd(cmd)                        
         except KeyError as e:
             print(f"Error: Invalid map specified. No maps found?", file=sys.stderr)

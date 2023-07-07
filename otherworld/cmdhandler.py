@@ -2,6 +2,7 @@ from map import OtherWorldMap
 from game import OtherWorldGame
 from inventory import InventoryError
 from constants import FLAG_COLLECTABLE, FLAG_CONSUMABLE
+from effect import Effect
 from player import Player
 
 
@@ -34,7 +35,10 @@ class CommandHandler:
                     inventory.remove_item(item_id)
                     msg = f"You've consumed {item.name}."
                     # TODO Remove some amount of hunger
-                    # TODO Apply effects if any present on the item
+                    # Apply effects if any present on the item
+                    for each in item.effects:
+                        eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
+                        game.player.effects.append(eff)
                 else:
                     msg = "This item cannot be consumed."
             except IndexError as e:
@@ -96,6 +100,10 @@ class CommandHandler:
                 id = game.current_map.exits[exit_name]
                 if id in game.maps:
                     game.current_map = game.maps[id]
+                    for each in game.current_map.effects:
+                        game.player.effects.append(each)
+
+                    msg = f"You are here: {game.current_map.title}"
                 else:
                     msg = "Error: Map not available."
             else:
