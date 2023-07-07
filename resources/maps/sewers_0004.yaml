@@ -1,0 +1,17 @@
+id: "sewers_0004"
+title: "Town sewers"
+description: "It smells like hell here. Rotten trash lying all around this place. You feel some liquid
+  under your feet. There is a strange violet light-emitting mist around you. You are POISONED!"
+exits:
+  - west: "sewers_0003"
+items: [
+  ["broken_bone", 1]
+]
+effects: [
+  {
+    name: "poison",
+    stat: "hp",
+    effect: -5,
+    duration: 10
+  },
+]
