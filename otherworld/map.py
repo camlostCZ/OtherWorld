@@ -4,6 +4,7 @@ from typing import TextIO
 
 from inventory import OtherWorldInventory, InventoryItem
 from baseclasses import YAMLSourced
+from effect import Effect
 
 
 class OtherWorldMap(YAMLSourced):
@@ -17,6 +18,7 @@ class OtherWorldMap(YAMLSourced):
         self.description = ""
         self.exits = {}
         self.items = OtherWorldInventory("map_items")
+        self.effects: list[Effect] = []
 
 
     def load_yaml_file(self, fd: TextIO) -> None:
@@ -40,3 +42,12 @@ class OtherWorldMap(YAMLSourced):
             for item in data["items"]:
                 id, count = item
                 self.items.add_item(id, count)
+
+        if "effects" in data:
+            for each in data["effects"]:
+                try:
+                    eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
+                    self.effects.append(eff)
+                except KeyError:
+                    # Skip invalid records
+                    pass

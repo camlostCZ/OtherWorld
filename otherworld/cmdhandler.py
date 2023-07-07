@@ -79,6 +79,10 @@ class CommandHandler:
                 id = game.current_map.exits[exit_name]
                 if id in game.maps:
                     game.current_map = game.maps[id]
+                    for each in game.current_map.effects:
+                        game.player.effects.append(each)
+
+                    msg = f"You are here: {game.current_map.title}"
                 else:
                     msg = "Error: Map not available."
             else:
