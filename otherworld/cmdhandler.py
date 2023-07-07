@@ -13,7 +13,7 @@ class CommandHandler:
     easy import.
 
     Each command handler is a class method with the following parameters:
-        - cmd: Command string as enterer by the user.
+        - cmd_dict: A dictionary of individual command parts.
         - game: The OtherWorldGame object. Used to access game data.
     Command handlers return a tuple of string displayed to the user 
     (response to the command) and a flag idicating the game should end.
