@@ -146,7 +146,7 @@ class OtherWorldGame:
             map = self.maps[map_id]
 
             items_table = ""
-            items_str = self.render_inventory(map.items, detailed=False)
+            items_str = self.render_inventory(map.inventory, detailed=False)
             if len(items_str) > 0:
                 items_table = f"  - Items:\n{items_str}\n"
 
@@ -158,3 +158,11 @@ class OtherWorldGame:
         except KeyError:
             result = f"Error: Map ID '{map_id}' not found."
         return result
+
+
+    def move_item_inv2inv(self, item_code: str, source_inv: OtherWorldInventory, 
+        target_inv: OtherWorldInventory) -> None:
+        item_idx = source_inv.get_item_idx_by_code(item_code)
+        item_id = source_inv.items[item_idx].id
+
+        pass

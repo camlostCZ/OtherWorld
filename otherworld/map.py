@@ -17,7 +17,7 @@ class OtherWorldMap(YAMLSourced):
         self.title = ""
         self.description = ""
         self.exits = {}
-        self.items = OtherWorldInventory("map_items")
+        self.inventory = OtherWorldInventory("map_items")
         self.effects: list[Effect] = []
 
 
@@ -41,7 +41,7 @@ class OtherWorldMap(YAMLSourced):
         if "items" in data:
             for item in data["items"]:
                 id, count = item
-                self.items.add_item(id, count)
+                self.inventory.add_item(id, count)
 
         if "effects" in data:
             for each in data["effects"]:

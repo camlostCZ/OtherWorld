@@ -63,7 +63,7 @@ class CommandHandler:
                 item_id = inventory.items[item_idx].id
                 inventory.remove_item(item_id)
                 # FIXME Check whether there is a free capacity in map's inventory
-                game.current_map.items.add_item(item_id)
+                game.current_map.inventory.add_item(item_id)
                 msg = f"The item has been dropped from your inventory."
             except InventoryError as e:
                 msg = f"{e}"
@@ -135,7 +135,7 @@ class CommandHandler:
         map_str = game.render_map(game.current_map.id)
 
         # Set the map's inventory as the current for the `examine` command
-        game.player.current_inventory = game.current_map.items
+        game.player.current_inventory = game.current_map.inventory
 
         return (map_str, False)
     
@@ -152,7 +152,7 @@ class CommandHandler:
         if len(parts) == 2:
             # Search for an item in the current map.
             code = parts[1].strip()
-            inventory = game.current_map.items
+            inventory = game.current_map.inventory
             item_idx = inventory.get_item_idx_by_code(code)
             try:
                 item_id = inventory.items[item_idx].id
