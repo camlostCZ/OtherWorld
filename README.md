@@ -16,23 +16,18 @@ YAML format has been chosen as it's readable, self-documenting.
 The player has their own inventory to keep items they are collecting during
 their journey through the world.
 
-Some items are collectable, some are consumable. They have, however, no effect
-on the player or the world at the moment.
+Some items are collectable, some are consumable. 
+
+Items and even maps can have some effect on the player's character like poison.
+So not only the player can influence the game world but the world can influence
+the player's character as well.
 
 ## Next steps
-
-### Effects
-I'm considering some kind of *effects* on the player, I mean on the character.
-Two main effects are comming to my mind:
-- healing effects (increase HP)
-- harming effects like poisons, deaths, injuries (decrease HP)
-These effects would update the player's HP over time, i.e. moves.
-
-*Effects* could be cause both by items (like poisons) and by maps (death in lava
-for example, teleport to another map).
+_Note_: Some of the *Next steps* have already been implemented. This section has
+been updated accordingly.
 
 ### Shops
-Shops are another possible extension to the current state of the game.
+Shops are a possible extension to the current state of the game.
 Shops should be pretty easy to implement as the current implementation of inventory
 is quite flexible.
 
@@ -42,7 +37,7 @@ in the game.
 Unfortunately, this feature is not on top of the next steps. But stay tuned for
 updates. :-)
 
-# Final Words
-This is just a first implementation. If I will be able to implement all the 
-planned features, I will run the game as a Discord bot so that we can enjoy 
-the game from any place on any device.
+## Final Words
+I must admit it's quite fun to develop a game - it takes only several hours but
+the fun when friends are dying while testing it is worthing every minute. Highly
+recommended.
