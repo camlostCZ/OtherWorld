@@ -3,6 +3,7 @@ from game import OtherWorldGame
 from inventory import InventoryError
 from constants import FLAG_COLLECTABLE, FLAG_CONSUMABLE
 from effect import Effect
+from item import ItemError
 from player import Player
 
 
@@ -24,17 +25,13 @@ class CommandHandler:
         parts = cmd.split(" ")
         if len(parts) == 2:
             code = parts[-1].strip()
-            inventory = game.player.inventory
-            item_idx = inventory.get_item_idx_by_code(code)
             try:
-                item_id = inventory.items[item_idx].id
-                # FIXME Possible bug if item_id wrong? Can it happen?
-                item = game.items[item_id]
+                inventory = game.player.inventory
+                item = inventory.get_item_by_code(code).item
                 # If not collectable, report an error.
                 if FLAG_CONSUMABLE in item.flags:
-                    inventory.remove_item(item_id)
+                    inventory.remove_item(item)
                     msg = f"You've consumed {item.name}."
-                    # TODO Remove some amount of hunger
                     # Apply effects if any present on the item
                     for each in item.effects:
                         eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
@@ -57,18 +54,11 @@ class CommandHandler:
         parts = cmd.split(" ")
         if len(parts) == 2:
             code = parts[-1].strip()
-            inventory = game.player.inventory
-            item_idx = inventory.get_item_idx_by_code(code)
             try:
-                item_id = inventory.items[item_idx].id
-                inventory.remove_item(item_id)
-                # FIXME Check whether there is a free capacity in map's inventory
-                game.current_map.inventory.add_item(item_id)
+                game.move_item_inv2inv(code, game.player.inventory, game.current_map.inventory)
                 msg = f"The item has been dropped from your inventory."
             except InventoryError as e:
                 msg = f"{e}"
-            except IndexError:
-                msg = "No such item."
         return (msg, False)
 
 
@@ -78,12 +68,9 @@ class CommandHandler:
         parts = cmd.split(" ")
         if len(parts) == 2:
             code = parts[-1].strip()
-            inventory = game.player.current_inventory
-            item_idx = inventory.get_item_idx_by_code(code)
             try:
-                item_id = inventory.items[item_idx].id
-                # FIXME Possible bug if item_id wrong? Can it happen?
-                item = game.items[item_id]
+                inventory = game.player.current_inventory
+                item = inventory.get_item_by_code(code).item
                 msg = item.description
             except IndexError:
                 msg = "No such item."
@@ -152,19 +139,14 @@ class CommandHandler:
         if len(parts) == 2:
             # Search for an item in the current map.
             code = parts[1].strip()
-            inventory = game.current_map.inventory
-            item_idx = inventory.get_item_idx_by_code(code)
             try:
-                item_id = inventory.items[item_idx].id
-                # FIXME Possible bug if item_id wrong? Can it happen?
-                item = game.items[item_id]
-                # If not collectable, report an error.
-                if FLAG_COLLECTABLE in item.flags:
-                    inventory.remove_item(item_id)
-                    game.player.inventory.add_item(item_id)
-                    msg = f"You've taken {item.name}."
-                else:
-                    msg = "This item cannot be taken."
+                item = game.current_map.inventory.get_item_by_code(code).item
+                game.move_item_inv2inv(code, 
+                    game.current_map.inventory, game.player.inventory, 
+                    flag=FLAG_COLLECTABLE)
+                msg = f"You've taken {item.name}."
+            except ItemError:
+                msg = "This item cannot be taken."
             except IndexError as e:
                 # If not found, report an error.
                 msg = "Cannot take an item. No such item available."

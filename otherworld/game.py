@@ -1,11 +1,14 @@
 from pathlib import Path
-from typing import Generator, Optional, TypeVar
+from typing import Callable, Generator, Optional, TextIO, TypeVar
+
+from yaml import safe_load
 
 from map import OtherWorldMap
-from item import OtherWorldItem
+from item import OtherWorldItem, ItemError
 from baseclasses import YAMLSourced
-from inventory import OtherWorldInventory
+from inventory import InventoryError, OtherWorldInventory
 from player import Player
+from effect import Effect
 from constants import (
     FILE_ENCODING,
     MAP_START,
@@ -34,8 +37,62 @@ class OtherWorldGame:
         Args:
             path (str): Path to a directory / folder.
         """
-        for item in self._load_yaml_from_folder(path, OtherWorldItem):
+        for item in self._load_yaml_from_folder(path, self.load_item_from_yaml):
             self.items[item.id] = item
+
+
+    def load_item_from_yaml(self, fd: TextIO) -> OtherWorldItem:
+        """
+        Load an item from a YAML file
+
+        Args:
+            fd (TextIO): File descriptor of the source YAML file
+
+        Returns:
+            OtherWorldItem: Item loaded from the file
+        """
+        data = safe_load(fd)
+        item = OtherWorldItem(
+            data["id"], data["name"], data["title"], data["description"],
+            data["weight"])
+        item.flags = data["flags"]
+        item.effects = data["effects"]
+        return item
+
+
+    def load_map_from_yaml(self, fd: TextIO) -> OtherWorldMap:
+        """
+        Load a map from a YAML file
+
+        Args:
+            fd (TextIO): File descriptor of the source YAML file
+
+        Returns:
+            OtherWorldMap: Map loaded from the file
+        """
+        data = safe_load(fd)
+        map = OtherWorldMap(data["id"], data["title"], data["description"])
+
+        if "exits" in data:
+            for each in data["exits"]:
+                for key, val in each.items():
+                    map.exits[key] = val
+
+        if "items" in data:
+            for each in data["items"]:
+                id, count = each
+                item = self.items[id]
+                map.inventory.add_item(item, count)
+
+        if "effects" in data:
+            for each in data["effects"]:
+                try:
+                    eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
+                    map.effects.append(eff)
+                except KeyError:
+                    # Skip invalid records
+                    pass
+        return map
 
 
     def load_maps(self, path: str) -> None:
@@ -49,13 +106,13 @@ class OtherWorldGame:
         Args:
             path (str): Path to a directory / folder.
         """
-        for item in self._load_yaml_from_folder(path, OtherWorldMap):
+        for item in self._load_yaml_from_folder(path, self.load_map_from_yaml):
             self.maps[item.id] = item
 
         self.current_map = self.maps[MAP_START]
 
 
-    def _load_yaml_from_folder(self, path: str, cls: type[YS]) -> Generator[YS, None, None]:
+    def _load_yaml_from_folder(self, path: str, fn: Callable) -> Generator[YS, None, None]:
         """
         Load game object from YAML files in a directory.
 
@@ -72,8 +129,7 @@ class OtherWorldGame:
         """
         p = Path(path)
         for each in p.glob("*.yaml"):
-            obj = cls()
-            obj.load_yaml_file(each.open(encoding=FILE_ENCODING))
+            obj = fn(each.open(encoding=FILE_ENCODING))
             yield obj
 
 
@@ -113,16 +169,15 @@ class OtherWorldGame:
         if detailed:
             lines.append("      Id  Item name                                         Count  Weight")
         for idx, each in enumerate(inventory.items):
-            item = self.items[each.id]
+            item = each.item
             item_code = OtherWorldInventory.CODE_SET[idx]
-            title = item.title
             line = f"      {item_code:>{2}}. "
             if detailed:
                 weight = each.count * item.weight
                 total_weight += weight
-                line += f"{title:<{48}}  {each.count:>{4}}  {weight:>{6}}"
+                line += f"{item.title:<{48}}  {each.count:>{4}}  {weight:>{6}}"
             else:
-                line += f"{title} ({each.count})"
+                line += f"{item.title} ({each.count})"
             lines.append(line)
         if detailed:
             lines.append(f"Total item weight: {total_weight:.1f}")
@@ -160,9 +215,31 @@ class OtherWorldGame:
         return result
 
 
-    def move_item_inv2inv(self, item_code: str, source_inv: OtherWorldInventory, 
-        target_inv: OtherWorldInventory) -> None:
-        item_idx = source_inv.get_item_idx_by_code(item_code)
-        item_id = source_inv.items[item_idx].id
+    def move_item_inv2inv(self, item_code: str, 
+        source_inv: OtherWorldInventory, target_inv: OtherWorldInventory,
+        flag: Optional[str]) -> None:
+        """
+        Move item from a source to a target inventory.
+        Can be used to move item from map inventory to player's inventory
+        and vice versa.
 
-        pass
+        Args:
+            item_code (str): Inventory code of an item
+            source_inv (OtherWorldInventory): Source inventory
+            target_inv (OtherWorldInventory): Target inventory
+            flag (Optional[str]): Flag which has to be present on the item
+                if the item should be moved
+
+        Raises:
+            ItemError: In case of non-matching flag
+            InventoryError: Item cannot be moved, target inventory is full
+        """
+        inv_item = source_inv.get_item_by_code(item_code)
+        if flag not in inv_item.item.flags:
+            raise ItemError("Flag doesn't match.")
+        
+        try:
+            target_inv.add_item(inv_item.item)
+            source_inv.remove_item(inv_item.item)
+        except InventoryError:
+            raise InventoryError("Item cannot be moved out of the source inventory.")
