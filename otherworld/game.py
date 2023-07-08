@@ -56,7 +56,15 @@ class OtherWorldGame:
             data["id"], data["name"], data["title"], data["description"],
             data["weight"])
         item.flags = data["flags"]
-        item.effects = data["effects"]
+
+        if "effects" in data:
+            for each in data["effects"]:
+                try:
+                    eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
+                    item.effects.append(eff)
+                except KeyError:
+                    # Skip invalid records
+                    pass
         return item
 
 
@@ -216,12 +224,14 @@ class OtherWorldGame:
 
 
     def move_item_inv2inv(self, item_code: str, 
-        source_inv: OtherWorldInventory, target_inv: OtherWorldInventory,
-        flag: Optional[str]) -> None:
+        source_inv: OtherWorldInventory, 
+        target_inv: Optional[OtherWorldInventory] = None,
+        flag: Optional[str] = None) -> None:
         """
         Move item from a source to a target inventory.
         Can be used to move item from map inventory to player's inventory
         and vice versa.
+        If target_inv is None, item can be discarded or consumed.
 
         Args:
             item_code (str): Inventory code of an item
@@ -239,7 +249,8 @@ class OtherWorldGame:
             raise ItemError("Flag doesn't match.")
         
         try:
-            target_inv.add_item(inv_item.item)
+            if target_inv is not None:
+                target_inv.add_item(inv_item.item)
             source_inv.remove_item(inv_item.item)
         except InventoryError:
             raise InventoryError("Item cannot be moved out of the source inventory.")

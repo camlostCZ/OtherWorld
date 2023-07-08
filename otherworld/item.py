@@ -2,6 +2,7 @@ from typing import Any, TextIO
 from yaml import safe_load
 
 from baseclasses import YAMLSourced
+from effect import Effect
 
 
 class ItemError(ValueError):
@@ -18,5 +19,5 @@ class OtherWorldItem(YAMLSourced):
         self.description: str = description
         self.weight: float = weight
         self.flags: list[str] = []
-        self.effects: dict[str, Any] = {}
+        self.effects: list[Effect] = []
 
