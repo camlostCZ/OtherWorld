@@ -23,23 +23,21 @@ class CommandHandler:
     def cmd_consume(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
         msg = "This item cannot be consumed."
         try:
+            code = cmd_dict["code"]
             inventory = game.player.inventory
-            item = inventory.get_item_by_code(cmd_dict["code"]).item
-            # If not collectable, report an error.
-            if FLAG_CONSUMABLE in item.flags:
-                inventory.remove_item(item)
-                msg = f"You've consumed {item.name}."
-                # Apply effects if any present on the item
-                for each in item.effects:
-                    eff = Effect(each["name"], each["stat"], each["effect"], each["duration"])
-                    game.player.effects.append(eff)
-            else:
-                msg = "This item cannot be consumed."
-        except IndexError as e:
+            item = inventory.get_item_by_code(code).item
+            game.move_item_inv2inv(code, game.player.inventory, flag=FLAG_CONSUMABLE)
+            msg = f"You've consumed {item.name}."
+            # Apply effects if any present on the item
+            for each in item.effects:
+                game.player.effects.append(each)
+        except IndexError:
             # If not found, report an error.
             msg = "Cannot consume an item. No such item available."
         except InventoryError as e:
             msg = f"{e}"
+        except ItemError:
+            msg = "This item cannot be consumed."
         return (msg, False)
     
 
