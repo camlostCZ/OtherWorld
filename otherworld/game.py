@@ -193,7 +193,7 @@ class OtherWorldGame:
         return result
     
 
-    def render_map(self, map_id: str) -> str:
+    def render_map(self, map: str) -> str:
         """
         Render text map description. It's being displayed when the user
         enters the `look` command.
@@ -205,21 +205,17 @@ class OtherWorldGame:
             str: Rendered string
         """
         result = ""
-        try:
-            map = self.maps[map_id]
+        items_table = ""
+        items_str = self.render_inventory(map.inventory, detailed=False)
+        if len(items_str) > 0:
+            items_table = f"  - Items:\n{items_str}\n"
 
-            items_table = ""
-            items_str = self.render_inventory(map.inventory, detailed=False)
-            if len(items_str) > 0:
-                items_table = f"  - Items:\n{items_str}\n"
-
-            exits_str = ", ".join(map.exits.keys())
-            result = f"""{map.title}
+        exits_str = ", ".join(map.exits.keys())
+        
+        result = f"""{map.title}
 {map.description}
 
 {items_table}  - Possible exits: {exits_str}"""
-        except KeyError:
-            result = f"Error: Map ID '{map_id}' not found."
         return result
 
 

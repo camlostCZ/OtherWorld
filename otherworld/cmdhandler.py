@@ -100,7 +100,7 @@ class CommandHandler:
 
     @classmethod
     def cmd_look(cls, cmd_dict: dict[str, str], game: OtherWorldGame) -> tuple[str, bool]:
-        map_str = game.render_map(game.current_map.id)
+        map_str = game.render_map(game.current_map)
 
         # Set the map's inventory as the current for the `examine` command
         game.player.current_inventory = game.current_map.inventory
