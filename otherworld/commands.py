@@ -4,6 +4,16 @@ from game import OtherWorldGame
 # A dictionary of the available commands.
 # Keep it sorted so that it's easy to locate individual commands.
 COMMANDS = {
+    "attack": {
+        "help": "Not implemented yet.",
+        "usage": "Use `attack <NPC code>` to attack a NPC.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
+    "close": {
+        "help": "Not implemented yet.",
+        "usage": "Use `attack <NPC code>` to close an item.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
     "consume": {
         "help": "Eat an item if it's consumable",
         "usage": "Use `consume <inventory item code>` to consume an item.",
@@ -18,6 +28,11 @@ COMMANDS = {
         "help": "Examine an item in the player's inventory or on the current map",
         "usage": "Use `examine <item code>` to examine an item.",
         "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
+    "flee": {
+        "help": "Not implemented yet.",
+        "usage": "",
+        "pattern": r"^(?P<cmd>\w+)$",
     },
     "go": {
         "help": "Go to another map using the specified direction",
@@ -34,6 +49,11 @@ COMMANDS = {
         "usage": "",
         "pattern": r"^(?P<cmd>\w+)$",
     },
+    "open": {
+        "help": "Not implemented yet.",
+        "usage": "Use `attack <NPC code>` to open an item.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
     "quit": {
         "help": "Quit the game",
         "usage": "",
@@ -49,6 +69,8 @@ COMMANDS = {
 # A dictionary for alias -> command mappings.
 # The program uses this dictionary to search for commands.
 CMD_ALIASES = {
+    "a": "attack",
+    "attack": "attack",
     "c": "consume",
     "consume": "consume",
     "d": "drop",
