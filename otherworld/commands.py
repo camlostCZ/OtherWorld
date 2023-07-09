@@ -1,4 +1,5 @@
-from cmdhandler import CommandHandler
+from typing import Callable
+from game import OtherWorldGame
 
 # A dictionary of the available commands.
 # Keep it sorted so that it's easy to locate individual commands.
@@ -7,49 +8,41 @@ COMMANDS = {
         "help": "Eat an item if it's consumable",
         "usage": "Use `consume <inventory item code>` to consume an item.",
         "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
-        "fn": CommandHandler.cmd_consume
     },
     "drop": {
         "help": "Drop an item from player's inventory",
         "usage": "Use `drop <item code>` to drop an item.",
         "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
-        "fn": CommandHandler.cmd_drop
     },
     "examine": {
         "help": "Examine an item in the player's inventory or on the current map",
         "usage": "Use `examine <item code>` to examine an item.",
         "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
-        "fn": CommandHandler.cmd_examine
     },
     "go": {
         "help": "Go to another map using the specified direction",
         "usage": "Use `go <exit name>` to move in the game.",
         "pattern": r"^(?P<cmd>\w+)\s+(?P<exit>[^\s]+)$",
-        "fn": CommandHandler.cmd_go
     },
     "inventory": {
         "help": "List the player's inventory",
         "usage": "",
         "pattern": r"^(?P<cmd>\w+)$",
-        "fn": CommandHandler.cmd_inventory
     },
     "look": {
         "help": "Display a map description",
         "usage": "",
         "pattern": r"^(?P<cmd>\w+)$",
-        "fn": CommandHandler.cmd_look
     },
     "quit": {
         "help": "Quit the game",
         "usage": "",
         "pattern": r"^(?P<cmd>\w+)$",
-        "fn": CommandHandler.cmd_quit
     },
     "take": {
         "help": "Take an item from the floor / map",
         "usage": "Use `take <item code>` to take items.",
         "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
-        "fn": CommandHandler.cmd_take
     }
 }
 
@@ -74,3 +67,35 @@ CMD_ALIASES = {
     "t": "take",
     "take": "take"
 }
+
+def get_cmd_handler(cmd: str, game: OtherWorldGame) -> Callable:
+    """
+    Provide mapping of commands to their handlers.
+
+    Using the COMMANDS dictionary for the mapping lead to
+    circular dependencies in case of some commands, thus the function.
+
+    Args:
+        cmd (str): Commands name
+        game (OtherWorldGame): The game object - used to modify game state.
+
+    Returns:
+        Callable: A OtherWorldGame method designed to handle the command.
+    """
+    match cmd:
+        case "consume":
+            return game.handle_cmd_consume
+        case "drop":
+            return game.handle_cmd_drop
+        case "examine":
+            return game.handle_cmd_examine
+        case "go":
+            return game.handle_cmd_go
+        case "inventory":
+            return game.handle_cmd_inventory
+        case "look":
+            return game.handle_cmd_look
+        case "quit":
+            return game.handle_cmd_quit
+        case "take":
+            return game.handle_cmd_take
