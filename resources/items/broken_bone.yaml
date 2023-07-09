@@ -1,0 +1,10 @@
+id: "broken_bone"
+name: "broken bone"
+title: "A broken bone"
+description: "An old broken bone. A human one?"
+weight: 0.1
+flags: [
+  "collectable"
+]
+effects: [
+]

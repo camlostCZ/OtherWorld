@@ -1,0 +1,10 @@
+id: "sewers_0003"
+title: "Town sewers"
+description: "It smells like hell here. Rotten trash lying all around this place. There is a strange liquid
+  on the ground but you can barely see it because it is so dark here."
+exits:
+  - south: "sewers_0002"
+  - east: "sewers_0004"
+items: [
+  ["broken_bone", 1]
+]

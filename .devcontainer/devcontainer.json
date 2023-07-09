@@ -21,19 +21,20 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"njpwerner.autodocstring",
-				"hediet.debug-visualizer",
 				"everettjf.filter-line",
+				"gruntfuggly.todo-tree",
+				"hediet.debug-visualizer",
 				"janisdd.vscode-edit-csv",
 				"mhutchie.git-graph",
-				"ms-python.vscode-pylance",
+				"ms-azuretools.vscode-docker",
 				"ms-python.python",
-				"gruntfuggly.todo-tree",
-				"ms-toolsai.jupyter",
-				"ms-toolsai.vscode-jupyter-cell-tags",
+				"ms-python.vscode-pylance",
 				"ms-toolsai.jupyter-keymap",
 				"ms-toolsai.jupyter-renderers",
-				"ms-toolsai.vscode-jupyter-slideshow"
+				"ms-toolsai.jupyter",
+				"ms-toolsai.vscode-jupyter-cell-tags",
+				"ms-toolsai.vscode-jupyter-slideshow",
+				"njpwerner.autodocstring"
 			]
 		}
 	}

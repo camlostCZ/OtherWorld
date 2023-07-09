@@ -1,0 +1,9 @@
+id: "town0001_sign"
+name: "wooden sign"
+title: "An old wooden sign"
+description: "The sign says: DO NOT ENTER THE SEWERS! You will die there. That's for sure. C."
+weight: 0.7
+flags: [
+]
+effects: [
+]

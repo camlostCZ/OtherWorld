@@ -1,0 +1,6 @@
+id: "sewers_0002"
+title: "Town sewers"
+description: "It smells like hell here. Rotten trash lying all around this place."
+exits:
+  - south: "sewers_0001"
+  - north: "sewers_0003"

@@ -1,39 +1,82 @@
-from cmdhandler import CommandHandler
+from typing import Callable
+from game import OtherWorldGame
 
 # A dictionary of the available commands.
 # Keep it sorted so that it's easy to locate individual commands.
 COMMANDS = {
+    "attack": {
+        "help": "Not implemented yet.",
+        "usage": "Use `attack <NPC code>` to attack a NPC.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
+    "close": {
+        "help": "Not implemented yet.",
+        "usage": "Use `attack <NPC code>` to close an item.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
     "consume": {
-        "help": "Eat an item if it's to eat.",
-        "fn": CommandHandler.cmd_consume
+        "help": "Eat an item if it's consumable",
+        "usage": "Use `consume <inventory item code>` to consume an item.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
+    "drop": {
+        "help": "Drop an item from player's inventory",
+        "usage": "Use `drop <item code>` to drop an item.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
+    "examine": {
+        "help": "Examine an item in the player's inventory or on the current map",
+        "usage": "Use `examine <item code>` to examine an item.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
+    },
+    "flee": {
+        "help": "Not implemented yet.",
+        "usage": "",
+        "pattern": r"^(?P<cmd>\w+)$",
     },
     "go": {
         "help": "Go to another map using the specified direction",
-        "fn": CommandHandler.cmd_go
+        "usage": "Use `go <exit name>` to move in the game.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<exit>[^\s]+)$",
     },
     "inventory": {
         "help": "List the player's inventory",
-        "fn": CommandHandler.cmd_inventory
+        "usage": "",
+        "pattern": r"^(?P<cmd>\w+)$",
     },
     "look": {
         "help": "Display a map description",
-        "fn": CommandHandler.cmd_look
+        "usage": "",
+        "pattern": r"^(?P<cmd>\w+)$",
+    },
+    "open": {
+        "help": "Not implemented yet.",
+        "usage": "Use `attack <NPC code>` to open an item.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
     },
     "quit": {
         "help": "Quit the game",
-        "fn": CommandHandler.cmd_quit
+        "usage": "",
+        "pattern": r"^(?P<cmd>\w+)$",
     },
     "take": {
         "help": "Take an item from the floor / map",
-        "fn": CommandHandler.cmd_take
+        "usage": "Use `take <item code>` to take items.",
+        "pattern": r"^(?P<cmd>\w+)\s+(?P<code>[^\s]+)$",
     }
 }
 
 # A dictionary for alias -> command mappings.
 # The program uses this dictionary to search for commands.
 CMD_ALIASES = {
+    "a": "attack",
+    "attack": "attack",
     "c": "consume",
     "consume": "consume",
+    "d": "drop",
+    "drop": "drop",
+    "ex": "examine",
+    "examine": "examine",
     "g": "go",
     "go": "go",
     "i": "inventory",
@@ -46,3 +89,35 @@ CMD_ALIASES = {
     "t": "take",
     "take": "take"
 }
+
+def get_cmd_handler(cmd: str, game: OtherWorldGame) -> Callable:
+    """
+    Provide mapping of commands to their handlers.
+
+    Using the COMMANDS dictionary for the mapping lead to
+    circular dependencies in case of some commands, thus the function.
+
+    Args:
+        cmd (str): Commands name
+        game (OtherWorldGame): The game object - used to modify game state.
+
+    Returns:
+        Callable: A OtherWorldGame method designed to handle the command.
+    """
+    match cmd:
+        case "consume":
+            return game.handle_cmd_consume
+        case "drop":
+            return game.handle_cmd_drop
+        case "examine":
+            return game.handle_cmd_examine
+        case "go":
+            return game.handle_cmd_go
+        case "inventory":
+            return game.handle_cmd_inventory
+        case "look":
+            return game.handle_cmd_look
+        case "quit":
+            return game.handle_cmd_quit
+        case "take":
+            return game.handle_cmd_take
