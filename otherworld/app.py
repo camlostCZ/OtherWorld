@@ -1,9 +1,10 @@
+import re
 import sys
 
 from pathlib import Path
 
 from constants import PATH_ITEMS, PATH_MAPS
-from commands import COMMANDS, CMD_ALIASES
+from commands import COMMANDS, CMD_ALIASES, get_cmd_handler
 from game import OtherWorldGame
 
 
@@ -15,6 +16,9 @@ class CliApp:
 
 
     def cmd_help_handler(self):
+        """
+        Handle `help` command.
+        """
         print("Available commands:")
         for k, v in COMMANDS.items():
             print(f"    {k:<{16}}{v['help']}")
@@ -38,7 +42,12 @@ class CliApp:
             key = cmd.split(" ")[0]
             cmd_name = CMD_ALIASES[key]
             command = COMMANDS[cmd_name]
-            msg, should_exit = command["fn"](cmd, self.game)
+            m = re.match(command["pattern"], cmd)
+            if m:
+                cmd_handler = get_cmd_handler(cmd_name, self.game)
+                msg, should_exit = cmd_handler(m.groupdict())
+            else:
+                msg = f"Error: {command['usage']}"
         except KeyError as e:
             msg = "Error: Unknown command."
         return (msg, should_exit)

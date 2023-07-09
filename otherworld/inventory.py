@@ -6,13 +6,12 @@ class InventoryError(RuntimeError):
 
 
 class InventoryItem:
-    def __init__(self, id: str, count: int = 1):
-        self.id = id
-        #self.item: OtherWorldItem
+    def __init__(self, item: OtherWorldItem, count: int = 1):
+        self.item: OtherWorldItem = item
         self.count = count
 
-    #def get_item_weight(self) -> float:
-    #    return self.count * self.item.weight
+    def get_item_weight(self) -> float:
+        return self.count * self.item.weight
 
 
 class OtherWorldInventory:
@@ -34,7 +33,7 @@ class OtherWorldInventory:
         self.items: list[InventoryItem] = []
 
 
-    def add_item(self, item_id: str, count: int = 1) -> None:
+    def add_item(self, item: OtherWorldItem, count: int = 1) -> None:
         """
         Add an item into the inventory.
 
@@ -44,11 +43,11 @@ class OtherWorldInventory:
         Raises:
             InventoryError: In case of full inventory.
         """
-        idx = self.get_item_idx(item_id)
+        idx = self.get_item_idx(item.id)
         if idx >= 0:    # Item found
             self.items[idx].count += count
         elif len(self.items) < self.max_items:
-            self.items.append(InventoryItem(item_id, count))
+            self.items.append(InventoryItem(item, count))
         else:
             raise InventoryError("Invetory full")
 
@@ -65,13 +64,13 @@ class OtherWorldInventory:
         """
         result = -1
         for idx, each in enumerate(self.items):
-            if each.id == item_id:
+            if each.item.id == item_id:
                 result = idx
                 break
         return result
 
 
-    def remove_item(self, item_id: str) -> None:
+    def remove_item(self, item: OtherWorldItem) -> None:
         """
         Remove an item from the inventory.
 
@@ -81,17 +80,17 @@ class OtherWorldInventory:
         Raises:
             InventoryError: If the item is not present in the inventory.
         """
-        idx = self.get_item_idx(item_id)
+        idx = self.get_item_idx(item.id)
         if idx >= 0:    # Item found
-            item = self.items[idx]
-            item.count += -1
-            if item.count == 0: # Last piece of an item removed
+            inv_item = self.items[idx]
+            inv_item.count += -1
+            if inv_item.count == 0: # Last piece of an item removed
                 self.items = self.items[:idx] + self.items[idx + 1:]       
         else:
             raise InventoryError("Item not found")
         
 
-    def get_item_idx_by_code(self, code: str) -> int:
+    def _get_item_idx_by_code(self, code: str) -> int:
         """
         Get item by so-called code which is typically a single letter.
         Can be overridden in child classes to increase the maximum capacity
@@ -105,3 +104,7 @@ class OtherWorldInventory:
         """
         idx = OtherWorldInventory.CODE_SET.index(code)
         return idx
+
+
+    def get_item_by_code(self, code: str) -> OtherWorldItem:
+        return self.items[self._get_item_idx_by_code(code)]

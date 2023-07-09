@@ -2,32 +2,22 @@ from typing import Any, TextIO
 from yaml import safe_load
 
 from baseclasses import YAMLSourced
+from effect import Effect
+
+
+class ItemError(ValueError):
+    pass
 
 
 class OtherWorldItem(YAMLSourced):
-    def __init__(self) -> None:
+    def __init__(self, id: str, name: str, title: str, description: str,
+        weight: float) -> None:
         super().__init__()
-        self.id: str
-        self.name: str
-        self.title: str
-        self.description: str
-        self.weight: float
-        self.flags: list[str]
-        self.effects: dict[str, Any]
-        
+        self.id: str = id
+        self.name: str = name
+        self.title: str = title
+        self.description: str = description
+        self.weight: float = weight
+        self.flags: list[str] = []
+        self.effects: list[Effect] = []
 
-    def load_yaml_file(self, fd: TextIO) -> None:
-        """
-        Load a map from a YAML file
-
-        Args:
-            fd (TextIO): File descriptor of the source YAML file
-        """
-        data = safe_load(fd)
-        self.id = data["id"]
-        self.name = data["name"]
-        self.title = data["title"]
-        self.description = data["description"]
-        self.weight = data["weight"]
-        self.flags = data["flags"]
-        self.effects = data["effects"]

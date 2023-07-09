@@ -8,3 +8,5 @@ PATH_MAPS = "./resources/maps"
 
 FLAG_COLLECTABLE = "collectable"
 FLAG_CONSUMABLE = "consumable"
+FLAG_DROPABLE = "dropable"
+FLAG_OPENABLE = "openable"

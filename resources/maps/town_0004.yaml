@@ -4,4 +4,4 @@ description: "This is the south city gate. Its stone walls seem unbreakable.
   There is a path leading south to the fields."
 exits:
   - south: "fields_0001"
-  - north: "town_0001`"
+  - north: "town_0001"
