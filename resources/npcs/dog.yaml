@@ -1,0 +1,14 @@
+name: A timid little dog
+dead_title: A corpse of
+actions: [
+  [60, "It's lying on the ground with his tongue out."],
+  [20, "It's chasing its own tail."],
+  [20, "It pees you legs."]
+]
+stats:
+  - MAX_HP: 6
+  - ATTACK: 2
+  - DEFENSE: 1
+move:
+  - probability: 33
+  - distance: 1
